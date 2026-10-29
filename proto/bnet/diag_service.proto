@@ -1,0 +1,56 @@
+import "bnet/rpc.proto";
+
+package bnet.protocol.diag;
+
+option cc_generic_services = false;
+
+message GetVarRequest
+{
+    required string name = 1;
+}
+
+message GetVarResponse
+{
+    required string value = 1;
+}
+
+message SetVarRequest
+{
+    required string name = 1;
+    required string value = 2;
+}
+
+message QueryRequest
+{
+    required string name = 1;
+    repeated string args = 2;
+}
+
+message Row
+{
+    repeated string values = 1;
+}
+
+message QueryResponse
+{
+    required string name = 1;
+    repeated string columns = 2;
+    repeated .bnet.protocol.diag.Row rows = 3;
+}
+
+service DiagService
+{
+    rpc GetVar(.bnet.protocol.diag.GetVarRequest) returns(.bnet.protocol.diag.GetVarResponse)
+    {
+        option (method_id) = 1;
+    }
+    rpc SetVar(.bnet.protocol.diag.SetVarRequest) returns(.bnet.protocol.NoData)
+    {
+        option (method_id) = 2;
+    }
+    rpc Query(.bnet.protocol.diag.QueryRequest) returns(.bnet.protocol.diag.QueryResponse)
+    {
+        option (method_id) = 3;
+    }
+}
+

@@ -1,0 +1,142 @@
+import "AttributeSerializer.proto";
+import "Items.proto";
+import "Hero.proto";
+import "OnlineService.proto";
+import "GBHandle.proto";
+
+package D3.Profile;
+
+message ClassInfo
+{
+    optional uint64 playtime = 1 [default = 0];
+    optional uint32 highest_level = 2 [default = 0];
+    optional uint32 highest_difficulty = 3 [default = 0];
+    optional uint32 pvp_games = 4 [default = 0];
+}
+
+message SkillWithRune
+{
+    required sfixed32 skill = 1 [default = -1];
+    optional sint32 rune_type = 2 [default = -1];
+}
+
+message SkillsWithRunes
+{
+    repeated .D3.Profile.SkillWithRune runes = 1;
+}
+
+message PassiveSkills
+{
+    repeated sfixed32 sno_traits = 1;
+}
+
+message KillerInfo
+{
+    optional int32 sno_killer = 1 [default = -1];
+    optional uint32 rarity = 2;
+    repeated int32 rare_name_gbids = 3;
+}
+
+message HeroProfile
+{
+    optional uint64 monsters_killed = 1;
+    optional uint64 elites_killed = 2;
+    optional uint64 gold_collected = 3;
+    optional uint32 highest_level = 4;
+    optional uint32 highest_difficulty = 5;
+    optional uint32 create_time = 6;
+    optional bool hardcore = 7 [default = false];
+    optional uint32 strength = 8;
+    optional uint32 dexterity = 9;
+    optional uint32 intelligence = 10;
+    optional uint32 vitality = 11;
+    optional uint32 armor = 12;
+    optional float dps = 13;
+    optional uint32 resist_arcane = 14;
+    optional uint32 resist_fire = 15;
+    optional uint32 resist_lightning = 16;
+    optional uint32 resist_poison = 17;
+    optional uint32 resist_cold = 18;
+    optional .D3.Items.ItemList equipment = 19;
+    optional .D3.Profile.SkillsWithRunes sno_active_skills = 20;
+    optional .D3.Profile.PassiveSkills sno_traits = 21;
+    optional uint32 death_time = 22;
+    optional .D3.Profile.KillerInfo killer_info = 23;
+    optional uint32 sno_kill_location = 24;
+    optional .D3.OnlineService.EntityId hero_id = 27;
+    optional float damage_increase = 28;
+    optional float crit_chance = 29;
+    optional float damage_reduction = 30;
+    optional uint32 life = 31;
+    optional uint32 pvp_glory = 35;
+    optional uint32 pvp_wins = 36;
+    optional uint32 pvp_takedowns = 37;
+    optional uint64 pvp_damage = 38;
+}
+
+message HeroProfileList
+{
+    repeated .D3.Profile.HeroProfile heros = 1;
+}
+
+message AccountProfile
+{
+    optional uint32 highest_difficulty = 1;
+    optional uint32 highest_boss_difficulty_1 = 2;
+    optional uint32 highest_boss_difficulty_2 = 3;
+    optional uint32 highest_boss_difficulty_3 = 4;
+    optional uint32 highest_boss_difficulty_4 = 5;
+    optional uint64 monsters_killed = 6 [default = 0];
+    optional uint64 elites_killed = 7 [default = 0];
+    optional uint64 gold_collected = 8 [default = 0];
+    optional uint64 highest_hardcore_level = 9;
+    optional uint64 hardcore_monsters_killed = 10;
+    optional .D3.Profile.ClassInfo class_barbarian = 11;
+    optional .D3.Profile.ClassInfo class_demonhunter = 12;
+    optional .D3.Profile.ClassInfo class_monk = 13;
+    optional .D3.Profile.ClassInfo class_witchdoctor = 14;
+    optional .D3.Profile.ClassInfo class_wizard = 15;
+    optional uint32 pvp_wins = 18;
+    optional uint32 pvp_takedowns = 19;
+    optional uint64 pvp_damage = 20;
+}
+
+message PvpMatchPlayer
+{
+    optional uint64 account_id = 1;
+    optional uint32 gbid_class = 2;
+    optional bool is_female = 3 [default = false];
+}
+
+message PvpMatchPlayers
+{
+    repeated .D3.Profile.PvpMatchPlayer team_0 = 1;
+    repeated .D3.Profile.PvpMatchPlayer team_1 = 2;
+}
+
+message PvpMatch
+{
+    optional uint32 arena = 1;
+    optional .D3.Profile.PvpMatchPlayers players = 2;
+    optional uint32 score_team_0 = 3;
+    optional uint32 score_team_1 = 4;
+    optional uint32 play_time = 5;
+    optional uint32 hero_id = 6;
+}
+
+message PvpMatchList
+{
+    repeated .D3.Profile.PvpMatch matches = 1;
+}
+
+message PvpTeam
+{
+    optional uint64 team_id = 1;
+    optional float rating = 2;
+    optional float rating_variance = 3;
+    optional float bootstrap = 4;
+    optional int32 games_played = 5;
+    optional uint32 last_played = 6;
+    optional int32 num_members = 7;
+}
+

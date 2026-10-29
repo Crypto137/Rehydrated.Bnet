@@ -1,0 +1,116 @@
+import "bnet/attribute.proto";
+import "bnet/entity.proto";
+import "bnet/rpc.proto";
+import "bnet/channel_types.proto";
+
+package bnet.protocol.channel;
+
+option cc_generic_services = false;
+
+message GetChannelIdRequest
+{
+}
+
+message GetChannelIdResponse
+{
+    optional .bnet.protocol.EntityId channel_id = 1;
+}
+
+message CreateChannelRequest
+{
+    optional .bnet.protocol.Identity agent_identity = 1;
+    optional .bnet.protocol.channel.MemberState member_state = 2;
+    optional .bnet.protocol.channel.ChannelState channel_state = 3;
+    optional .bnet.protocol.EntityId channel_id = 4;
+    optional uint64 object_id = 5;
+    optional .bnet.protocol.EntityId local_agent = 6;
+    optional .bnet.protocol.channel.MemberState local_member_state = 7;
+}
+
+message CreateChannelResponse
+{
+    required uint64 object_id = 1;
+    optional .bnet.protocol.EntityId channel_id = 2;
+}
+
+message JoinChannelRequest
+{
+    optional .bnet.protocol.Identity agent_identity = 1;
+    optional .bnet.protocol.channel.MemberState member_state = 2;
+    required .bnet.protocol.EntityId channel_id = 3;
+    required uint64 object_id = 4;
+    repeated .bnet.protocol.EntityId friend_account_id = 5;
+    optional bool local_subscriber = 6 [default = true];
+}
+
+message JoinChannelResponse
+{
+    optional uint64 object_id = 1;
+    optional bool require_friend_validation = 2 [default = false];
+    repeated .bnet.protocol.EntityId privileged_account = 3;
+}
+
+message SubscribeChannelRequest
+{
+    optional .bnet.protocol.EntityId agent_id = 1;
+    required .bnet.protocol.EntityId channel_id = 2;
+    required uint64 object_id = 3;
+}
+
+message SubscribeChannelResponse
+{
+    optional uint64 object_id = 1;
+}
+
+message FindChannelRequest
+{
+    optional .bnet.protocol.Identity agent_identity = 1;
+    required .bnet.protocol.channel.FindChannelOptions options = 2;
+}
+
+message FindChannelResponse
+{
+    repeated .bnet.protocol.channel.ChannelDescription channel = 1;
+}
+
+message GetChannelInfoRequest
+{
+    optional .bnet.protocol.EntityId agent_id = 1;
+    required .bnet.protocol.EntityId channel_id = 2;
+    optional bool fetch_state = 3 [default = false];
+    optional bool fetch_members = 4 [default = false];
+}
+
+message GetChannelInfoResponse
+{
+    optional .bnet.protocol.channel.ChannelInfo channel_info = 1;
+}
+
+service ChannelOwner
+{
+    rpc GetChannelId(.bnet.protocol.channel.GetChannelIdRequest) returns(.bnet.protocol.channel.GetChannelIdResponse)
+    {
+        option (method_id) = 1;
+    }
+    rpc CreateChannel(.bnet.protocol.channel.CreateChannelRequest) returns(.bnet.protocol.channel.CreateChannelResponse)
+    {
+        option (method_id) = 2;
+    }
+    rpc JoinChannel(.bnet.protocol.channel.JoinChannelRequest) returns(.bnet.protocol.channel.JoinChannelResponse)
+    {
+        option (method_id) = 3;
+    }
+    rpc FindChannel(.bnet.protocol.channel.FindChannelRequest) returns(.bnet.protocol.channel.FindChannelResponse)
+    {
+        option (method_id) = 4;
+    }
+    rpc GetChannelInfo(.bnet.protocol.channel.GetChannelInfoRequest) returns(.bnet.protocol.channel.GetChannelInfoResponse)
+    {
+        option (method_id) = 5;
+    }
+    rpc SubscribeChannel(.bnet.protocol.channel.SubscribeChannelRequest) returns(.bnet.protocol.channel.SubscribeChannelResponse)
+    {
+        option (method_id) = 6;
+    }
+}
+

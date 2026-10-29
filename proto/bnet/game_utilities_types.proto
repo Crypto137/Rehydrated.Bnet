@@ -1,0 +1,15 @@
+import "bnet/attribute.proto";
+import "bnet/entity.proto";
+
+package bnet.protocol.game_utilities;
+
+option java_package = "bnet.protocol.game_utilities";
+option java_outer_classname = "GameUtilitiesTypesProto";
+
+message PlayerVariables
+{
+    required .bnet.protocol.Identity identity = 1;
+    optional double rating = 2;
+    repeated .bnet.protocol.attribute.Attribute attribute = 3;
+}
+

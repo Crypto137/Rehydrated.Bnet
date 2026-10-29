@@ -1,0 +1,17 @@
+import "bnet/attribute.proto";
+import "bnet/entity.proto";
+
+package bnet.protocol.game_master;
+
+option java_package = "bnet.protocol.game_master";
+option java_outer_classname = "GameFactoryProto";
+
+message GameProperties
+{
+    repeated .bnet.protocol.attribute.Attribute creation_attributes = 1;
+    optional .bnet.protocol.attribute.AttributeFilter filter = 2;
+    optional bool create = 3 [default = false];
+    optional bool open = 4 [default = true];
+    optional fixed32 program_id = 5;
+}
+
