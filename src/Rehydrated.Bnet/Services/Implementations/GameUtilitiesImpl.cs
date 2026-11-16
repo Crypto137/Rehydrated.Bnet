@@ -8,6 +8,7 @@ namespace Rehydrated.Bnet.Services.Implementations
 {
     public enum GameUtilitiesClientRequestType
     {
+        HeroDigestList = 0,     // in D3.GameMessage.HeroDigestListRequest, out D3.GameMessage.HeroDigestListResponse
         HeroCreate = 1,         // in D3.OnlineService.HeroCreateParams,
         HeroSelect = 3,         // in D3.OnlineService.EntityId
         InitialLogin = 6,       // in D3.GameMessage.InitialLoginDataRequest, out D3.GameMessage.InitialLoginDataResponse
@@ -21,11 +22,31 @@ namespace Rehydrated.Bnet.Services.Implementations
 
         public ServiceId ServiceId { get; set; }
 
-        public static bnet.protocol.attribute.Attribute BuildMessageAttribute(IMessage message)
+        private static bnet.protocol.attribute.Attribute BuildMessageAttribute(IMessage message)
         {
             return bnet.protocol.attribute.Attribute.CreateBuilder()
                 .SetName("CustomMessage")
                 .SetValue(bnet.protocol.attribute.Variant.CreateBuilder().SetMessageValue(message.ToByteString()))
+                .Build();
+        }
+
+        private static D3.Hero.Digest GetHeroDigest()
+        {
+            return D3.Hero.Digest.CreateBuilder()
+                .SetVersion(902)
+                .SetHeroId(D3.OnlineService.EntityId.CreateBuilder().SetIdHigh(0x0300000000000000).SetIdLow(1))
+                .SetHeroName("Rehydrated")
+                .SetGbidClass(0x1D4681B1)
+                .SetLevel(1)
+                .SetPlayerFlags(2)
+                .SetVisualEquipment(D3.Hero.VisualEquipment.DefaultInstance)
+                .SetLastPlayedAct(0)
+                .SetHighestUnlockedAct(0)
+                .SetLastPlayedDifficulty(0)
+                .SetHighestUnlockedDifficulty(0)
+                .SetLastPlayedQuest(-1)
+                .SetLastPlayedQuestStep(-1)
+                .SetTimePlayed(0)
                 .Build();
         }
 
@@ -37,6 +58,15 @@ namespace Rehydrated.Bnet.Services.Implementations
 
             switch (requestType)
             {
+                case GameUtilitiesClientRequestType.HeroDigestList:
+                    D3.GameMessage.HeroDigestListRequest heroDigestListRequest = D3.GameMessage.HeroDigestListRequest.ParseFrom(
+                        request.GetAttribute(2).Value.MessageValue);
+                    Logger.Debug($"ProcessClientRequest(): HeroDigestListRequest\n{heroDigestListRequest}");
+                    response.AddAttribute(BuildMessageAttribute(D3.GameMessage.HeroDigestListResponse.CreateBuilder()
+                        .AddDigestList(GetHeroDigest())
+                        .Build()));
+                    break;
+
                 case GameUtilitiesClientRequestType.HeroCreate:     // hero creation request - D3.OnlineService.HeroCreateParams
                     D3.OnlineService.HeroCreateParams createParams = D3.OnlineService.HeroCreateParams.ParseFrom(
                         request.GetAttribute(2).Value.MessageValue);
@@ -55,21 +85,7 @@ namespace Rehydrated.Bnet.Services.Implementations
                         .SetGameAccountSettings(D3.Client.GameAccountSettings.CreateBuilder()
                             .SetUseLastHero(1))
                         .SetHeroDigests(D3.GameMessage.HeroDigestListResponse.CreateBuilder()
-                            .AddDigestList(D3.Hero.Digest.CreateBuilder()
-                                .SetVersion(902)
-                                .SetHeroId(D3.OnlineService.EntityId.CreateBuilder().SetIdHigh(0x0300000000000000).SetIdLow(1))
-                                .SetHeroName("Rehydrated")
-                                .SetGbidClass(0x1D4681B1)
-                                .SetLevel(1)
-                                .SetPlayerFlags(2)
-                                .SetVisualEquipment(D3.Hero.VisualEquipment.DefaultInstance)
-                                .SetLastPlayedAct(0)
-                                .SetHighestUnlockedAct(0)
-                                .SetLastPlayedDifficulty(0)
-                                .SetHighestUnlockedDifficulty(0)
-                                .SetLastPlayedQuest(-1)
-                                .SetLastPlayedQuestStep(-1)
-                                .SetTimePlayed(0)))
+                            .AddDigestList(GetHeroDigest()))
                         .SetAccountDigest(D3.Account.Digest.CreateBuilder()
                             // 7447=>99, 7728=> 100, 8801=>102, 8296=>105, 8610=>106, 8815=>106, 8896=>106, 9183=>107
                             .SetVersion(107)
