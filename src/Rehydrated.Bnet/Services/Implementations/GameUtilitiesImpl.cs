@@ -39,7 +39,16 @@ namespace Rehydrated.Bnet.Services.Implementations
                 .SetGbidClass(0x1D4681B1)
                 .SetLevel(1)
                 .SetPlayerFlags(2)
-                .SetVisualEquipment(D3.Hero.VisualEquipment.DefaultInstance)
+                .SetVisualEquipment(D3.Hero.VisualEquipment.CreateBuilder()
+                    .AddVisualItem(D3.Hero.VisualItem.CreateBuilder().SetGbid(-1).SetDyeType(0).SetItemEffectType(0).SetEffectLevel(0)) // Head
+                    .AddVisualItem(D3.Hero.VisualItem.CreateBuilder().SetGbid(-1).SetDyeType(0).SetItemEffectType(0).SetEffectLevel(0)) // Chest
+                    .AddVisualItem(D3.Hero.VisualItem.CreateBuilder().SetGbid(-1).SetDyeType(0).SetItemEffectType(0).SetEffectLevel(0)) // Feet
+                    .AddVisualItem(D3.Hero.VisualItem.CreateBuilder().SetGbid(-1).SetDyeType(0).SetItemEffectType(0).SetEffectLevel(0)) // Hands
+                    .AddVisualItem(D3.Hero.VisualItem.CreateBuilder().SetGbid(-1).SetDyeType(0).SetItemEffectType(0).SetEffectLevel(0)) // Weapon1
+                    .AddVisualItem(D3.Hero.VisualItem.CreateBuilder().SetGbid(-1).SetDyeType(0).SetItemEffectType(0).SetEffectLevel(0)) // Weapon2
+                    .AddVisualItem(D3.Hero.VisualItem.CreateBuilder().SetGbid(-1).SetDyeType(0).SetItemEffectType(0).SetEffectLevel(0)) // Shoulders
+                    .AddVisualItem(D3.Hero.VisualItem.CreateBuilder().SetGbid(-1).SetDyeType(0).SetItemEffectType(0).SetEffectLevel(0)) // Legs
+                )
                 .SetLastPlayedAct(0)
                 .SetHighestUnlockedAct(0)
                 .SetLastPlayedDifficulty(0)
