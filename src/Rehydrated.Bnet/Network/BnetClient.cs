@@ -1,6 +1,7 @@
 ﻿using NLog;
 using Rehydrated.Bnet.Rpc;
 using Rehydrated.Bnet.Services;
+using System.Buffers;
 using System.Net.Sockets;
 
 namespace Rehydrated.Bnet.Network
@@ -32,11 +33,17 @@ namespace Rehydrated.Bnet.Network
 
         public void Send(RpcPacket packet)
         {
-            // TODO: optimize this
-            using MemoryStream ms = new();
-            packet.Serialize(ms);
-            byte[] buffer = ms.ToArray();
-            _socket.Send(buffer);
+            int size = packet.SerializedSize;
+            byte[] buffer = ArrayPool<byte>.Shared.Rent(packet.SerializedSize);
+            try
+            {
+                packet.Serialize(buffer, 0);
+                _socket.Send(buffer, 0, size, SocketFlags.None);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
+            }
         }
 
         private async Task ReceiveData()

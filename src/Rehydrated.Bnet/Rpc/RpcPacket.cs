@@ -10,7 +10,7 @@ namespace Rehydrated.Bnet.Rpc
         public readonly bnet.protocol.Header Header;
         public readonly IMessage Message;
 
-        public int SerializedSize { get => Header.SerializedSize + Message.SerializedSize; }
+        public int SerializedSize { get => sizeof(ushort) + Header.SerializedSize + Message.SerializedSize; }
 
         /// <summary>
         /// Constructs an <see cref="RpcPacket"/> to make an RPC call to the client. 
@@ -44,18 +44,18 @@ namespace Rehydrated.Bnet.Rpc
             Message = message;
         }
 
-        public int Serialize(Stream stream)
+        public void Serialize(byte[] buffer, int offset)
         {
-            ushort headerSize = (ushort)Header.SerializedSize;
-            stream.WriteByte((byte)(headerSize >> 8));
-            stream.WriteByte((byte)(headerSize & 0xFF));
+            CodedOutputStream cos = CodedOutputStream.CreateInstance(buffer, offset, SerializedSize);
 
-            CodedOutputStream cos = CodedOutputStream.CreateInstance(stream);
+            ushort headerSize = (ushort)Header.SerializedSize;
+            cos.WriteRawByte((byte)(headerSize >> 8));
+            cos.WriteRawByte((byte)(headerSize & 0xFF));
+
             Header.WriteTo(cos);
             Message.WriteTo(cos);
-            cos.Flush();
 
-            return (int)(sizeof(ushort) + headerSize + Header.Size);
+            cos.Flush();
         }
     }
 }
